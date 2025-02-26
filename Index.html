@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloud Image Gallery</title>
+    <style>
+        body { max-width: 1200px; margin: 0 auto; padding: 20px; font-family: Arial; }
+        .upload-form { border: 2px dashed #ccc; padding: 20px; margin-bottom: 30px; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+        .image { width: 100%; height: 200px; object-fit: contain; }
+        .title { color: #1a73e8; margin: 10px 0; }
+        .description { color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <h1>Cloud Image Gallery</h1>
+    
+    <div class="upload-form">
+        <form method="post" enctype="multipart/form-data" action="/upload">
+            <input type="file" name="form_file" accept="image/*" required>
+            <button type="submit" style="margin-top: 10px;">Upload Image</button>
+        </form>
+    </div>
+
+    <div class="gallery">
+        {% for image in images %}
+        <div class="card">
+            <h3 class="title">{{ image.metadata.title | default("Untitled Image") }}</h3>
+            <img src="{{ url_for('files', user_id = image.name.split('/')[0], filename=image.name.split('/')[1]) }}" class="image" alt="{{ image.metadata.description[:2] | default('Uploaded image') }}">
+            <p class="description">{{ image.metadata.description | default("Description not available") }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
